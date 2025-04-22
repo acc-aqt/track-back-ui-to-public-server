@@ -102,10 +102,15 @@ const buildSongListHtml = (list, newSong) => {
 
 document.getElementById('connectBtn').onclick = async () => {
   username = document.getElementById('username').value
-  const serverInput = document
+  const serverFromInput = document
     .getElementById('server')
     .value.trim()
     .replace(/\/+\$/, '')
+
+  const serverFromConfig =
+    (window.TRACK_BACK_CONFIG || {}).TRACK_BACK_SERVER_URL || ''
+
+  const serverInput = serverFromInput || serverFromConfig
 
   if (!username || !serverInput) {
     alert('Please enter both server address and username.')
