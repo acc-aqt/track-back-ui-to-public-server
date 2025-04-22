@@ -9,7 +9,7 @@ The full codebase, including both the Python backend and the Web UI frontend, is
 
 ### 🎯 About this repository
 
-This repository contains a **clone of the TrackBack frontend**, preconfigured to connect to a **publicly reachable server instance**.
+This repository contains a **clone of the TrackBack frontend**, preconfigured to connect to a **publicly reachable server instance**. Is can be reached via [GitHub Pages](https://acc-aqt.github.io/track-back-ui-to-public-server/)
 
 > ⚠️ **Note:** Registration is required to access the public server!
 
