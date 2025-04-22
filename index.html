@@ -1,0 +1,60 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>TrackBack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Knewave&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <h1>🎵&thinsp;TrackBack&thinsp;🎵</h1>
+
+    <div id="controls">
+      <label id="server-label" style="display: none">
+        <!-- is only displayed if its a local url -->
+        <!-- is set in server_config(.example).js -->
+        Server&thinsp;🪩<br />
+        <input
+          id="server"
+          placeholder="e.g. http://192.168.x.x:4200"
+          size="30"
+          style="display: none"
+        />
+      </label>
+      <label>
+        Username&thinsp;👩🏻‍🎤<br />
+        <input id="username" size="30" />
+      </label>
+      <button id="connectBtn">Connect 👋🏻</button>
+      <button id="startGameBtn" style="display: none">
+        All players connected? Start!<br />
+        👩🏻‍🎤👨🏽‍🎤🧑🏻‍🎤👩🏽‍🎤👨🏻‍🎤🧑🏽‍🎤
+      </button>
+    </div>
+
+    <div id="game" style="display: none">
+      <div id="winnerHeader" style="display: none"></div>
+      <div id="newSongContainer" style="display: none"></div>
+      <div id="songListHeader" class="timeline-header" style="display: none">
+        🕰️ 📀 Your TrackBack Timeline 📀 🕰️
+      </div>
+      <h2 id="songCount" class="timeline-counter" style="display: none">
+        Song count: 0
+      </h2>
+      <div id="songTimeline" class="drop-box" style="display: none"></div>
+      <div id="logHeader" class="log-header">👩🏻‍🎤📬 Notifications</div>
+      <div id="log"></div>
+      <div id="serverControls">
+        <button id="stopServerBtn">Stop Server 🛑</button>
+      </div>
+    </div>
+    <script src="load-config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
