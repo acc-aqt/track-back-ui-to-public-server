@@ -113,6 +113,7 @@ document.getElementById('connectBtn').onclick = async () => {
   }
 
   console.log('Server input:', serverInput)
+
   if (!username || !serverInput) {
     alert('Please enter both server address and username.')
     return
@@ -293,10 +294,16 @@ document.getElementById('connectBtn').onclick = async () => {
 }
 
 document.getElementById('startGameBtn').onclick = async () => {
-  const serverInput = document
-    .getElementById('server')
-    .value.trim()
-    .replace(/\/+\$/, '')
+  let serverInput = (window.TRACK_BACK_CONFIG || {}).TRACK_BACK_SERVER_URL || ''
+
+  if (!serverInput) {
+    serverInput = document
+      .getElementById('server')
+      .value.trim()
+      .replace(/\/+\$/, '')
+  }
+
+  console.log('Server input:', serverInput)
   let urlObj
   try {
     urlObj = new URL(serverInput)
