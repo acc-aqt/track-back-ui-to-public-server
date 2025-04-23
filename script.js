@@ -113,7 +113,6 @@ document.getElementById('connectBtn').onclick = async () => {
   }
 
   console.log('Server input:', serverInput)
-  
   if (!username || !serverInput) {
     alert('Please enter both server address and username.')
     return
@@ -123,7 +122,7 @@ document.getElementById('connectBtn').onclick = async () => {
   try {
     urlObj = new URL(serverInput)
   } catch (e) {
-    alert('⚠️ Invalid server address.')
+    alert('⚠️ Invalid server address.', serverInput)
     return
   }
 
@@ -294,17 +293,10 @@ document.getElementById('connectBtn').onclick = async () => {
 }
 
 document.getElementById('startGameBtn').onclick = async () => {
- let serverInput = (window.TRACK_BACK_CONFIG || {}).TRACK_BACK_SERVER_URL || ''
-
-  if (!serverInput) {
-    serverInput = document
-      .getElementById('server')
-      .value.trim()
-      .replace(/\/+\$/, '')
-  }
-
-  console.log('Server input:', serverInput)
-  
+  const serverInput = document
+    .getElementById('server')
+    .value.trim()
+    .replace(/\/+\$/, '')
   let urlObj
   try {
     urlObj = new URL(serverInput)
@@ -332,29 +324,6 @@ document.getElementById('startGameBtn').onclick = async () => {
   document.getElementById('songListHeader').style.display = 'block'
   document.getElementById('songTimeline').style.display = 'block'
   document.getElementById('songCount').style.display = 'block'
-}
-
-document.getElementById('stopServerBtn').onclick = async () => {
-  const serverUrl = document
-    .getElementById('server')
-    .value.trim()
-    .replace(/\/+\$/, '')
-  let urlObj
-  try {
-    urlObj = new URL(serverUrl)
-  } catch (e) {
-    alert('Invalid server URL')
-    return
-  }
-
-  const shutdownUrl = `${urlObj.origin}/shutdown`
-  try {
-    const res = await fetch(shutdownUrl, { method: 'POST' })
-    const data = await res.json()
-    log(`🛑 ${data.message}`)
-  } catch (err) {
-    log('❌ Failed to stop the server.')
-  }
 }
 
 const setupDragDrop = () => {

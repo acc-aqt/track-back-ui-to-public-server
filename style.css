@@ -94,8 +94,7 @@ body {
 
 
   button,
-#controls button,
-#serverControls button {
+#controls button {
   padding: 0.5rem 0.75rem;
   font-size: 1rem;
   border: none;
@@ -112,15 +111,6 @@ body {
 button:hover,
 #controls button:hover {
   background-color: var(--primary-background);
-}
-
-/* Optional: Add styles for "danger" buttons like shutdown */
-#stopServerBtn {
-  background-color: var(--danger);
-}
-
-#stopServerBtn:hover {
-  background-color: var(--danger);
 }
 
   #newSongContainer {
@@ -219,21 +209,6 @@ button:hover,
     margin-top: 0.5rem;
   }
 
-  #serverControls {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1rem;
-  }
-  
-  #serverControls button {
-    /* background-color: #ff4d4d;
-    color: white; */
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
 
   #wrongGuessContainer {
     margin-top: 1rem;
