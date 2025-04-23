@@ -314,8 +314,10 @@ document.getElementById('startGameBtn').onclick = async () => {
 }
 
 document.getElementById('spotifyLoginBtn').onclick = () => {
-  serverUrl = getServerUrl()
-  window.open(serverUrl, '_blank')
+  const serverUrl = getServerUrl()
+  const loginUrl = `${serverUrl}/spotify-login`
+  console.log('🔐 Opening Spotify login at:', loginUrl)
+  window.open(loginUrl, '_blank')
 }
 
 const setupDragDrop = () => {
