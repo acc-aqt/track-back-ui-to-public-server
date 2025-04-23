@@ -1,20 +1,19 @@
 let socket
 
+function getServerUrl () {
+  const input = document.getElementById('server')
+  const inputValue = input?.value?.trim()?.replace(/\/+\$/, '') || ''
+
+  const configValue =
+    (window.TRACK_BACK_CONFIG || {}).TRACK_BACK_SERVER_URL || ''
+
+  return inputValue || configValue || ''
+}
+
 function startApp () {
-  console.log('✅ isLocalUrl defined:', isLocalUrl)
-  console.log('isLocalURL result', isLocalUrl('http://localhost:4200'))
-
-  const config = window.TRACK_BACK_CONFIG || {}
-  console.log('🧾 Loaded config:', config)
-  console.log('CONFIG VALUE:', window.TRACK_BACK_CONFIG)
-
-  const serverUrl = config.TRACK_BACK_SERVER_URL
-  console.log('🌐 serverUrl:', serverUrl)
-
+  serverUrl = getServerUrl()
   const serverInput = document.getElementById('server')
   const serverLabel = document.getElementById('server-label')
-
-  console.log('Checking serverUrl before calling isLocalUrl:', serverUrl)
 
   if (serverUrl && isLocalUrl(serverUrl)) {
     console.log('🌍 Using local server:', serverUrl)
@@ -52,7 +51,7 @@ let currentGuessSong = null
 let pauseAfterGuess = false
 let queuedTurn = null
 
-const WRONG_GUESS_DISPLAY_TIME = 3000 // How long the wrong guess stays visible
+const WRONG_GUESS_DISPLAY_TIME = 2000 // How long the wrong guess stays visible
 const FADE_DURATION = 1000 // Duration of fade-out animation
 
 const log = msg => {
@@ -103,27 +102,18 @@ const buildSongListHtml = (list, newSong) => {
 document.getElementById('connectBtn').onclick = async () => {
   username = document.getElementById('username').value
 
-  let serverInput = (window.TRACK_BACK_CONFIG || {}).TRACK_BACK_SERVER_URL || ''
+  serverUrl = getServerUrl()
 
-  if (!serverInput) {
-    serverInput = document
-      .getElementById('server')
-      .value.trim()
-      .replace(/\/+\$/, '')
-  }
-
-  console.log('Server input:', serverInput)
-
-  if (!username || !serverInput) {
+  if (!username || !serverUrl) {
     alert('Please enter both server address and username.')
     return
   }
 
   let urlObj
   try {
-    urlObj = new URL(serverInput)
+    urlObj = new URL(serverUrl)
   } catch (e) {
-    alert('⚠️ Invalid server address.', serverInput)
+    alert('⚠️ Invalid server address.', serverUrl)
     return
   }
 
@@ -294,19 +284,9 @@ document.getElementById('connectBtn').onclick = async () => {
 }
 
 document.getElementById('startGameBtn').onclick = async () => {
-  let serverInput = (window.TRACK_BACK_CONFIG || {}).TRACK_BACK_SERVER_URL || ''
-
-  if (!serverInput) {
-    serverInput = document
-      .getElementById('server')
-      .value.trim()
-      .replace(/\/+\$/, '')
-  }
-
-  console.log('Server input:', serverInput)
-  let urlObj
+  serverUrl = getServerUrl()
   try {
-    urlObj = new URL(serverInput)
+    urlObj = new URL(serverUrl)
   } catch (e) {
     alert('Invalid server address')
     return
@@ -331,6 +311,11 @@ document.getElementById('startGameBtn').onclick = async () => {
   document.getElementById('songListHeader').style.display = 'block'
   document.getElementById('songTimeline').style.display = 'block'
   document.getElementById('songCount').style.display = 'block'
+}
+
+document.getElementById('spotifyLoginBtn').onclick = () => {
+  serverUrl = getServerUrl()
+  window.open(serverUrl, '_blank')
 }
 
 const setupDragDrop = () => {
