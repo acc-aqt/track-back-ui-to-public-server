@@ -108,6 +108,7 @@ body {
   transition: background-color 0.3s ease;
 }
 
+
 button:hover,
 #controls button:hover {
   background-color: var(--primary-background);
