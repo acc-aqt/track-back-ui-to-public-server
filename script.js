@@ -148,8 +148,9 @@ function handleGuessResult (data) {
   if (data.result === 'correct') {
     log(`✅ Guess was correct: ${data.message}`)
     songCount += 1
-    document.getElementById('songCount').textContent = `Song count: ${songCount}`
-
+    document.getElementById(
+      'songCount'
+    ).textContent = `Song count: ${songCount}`
   } else {
     log(`❌ Guess was wrong: ${data.message}`)
   }
@@ -310,6 +311,12 @@ async function createGame (musicServiceType) {
     return
   }
 
+  if (musicServiceType === 'spotify') {
+    const loginUrl = `${serverUrl}/spotify-login?game_id=${gameId}`
+    console.log('🔐 Redirecting to Spotify login:', loginUrl)
+    window.open(loginUrl, '_blank')
+  }
+
   try {
     const res = await fetch(`${serverUrl}/create`, {
       method: 'POST',
@@ -328,12 +335,6 @@ async function createGame (musicServiceType) {
     }
 
     log(`🎮 Created new ${musicServiceType} game session: ${gameId}`)
-
-    if (musicServiceType === 'spotify') {
-      const loginUrl = `${serverUrl}/spotify-login?game_id=${gameId}`
-      console.log('🔐 Redirecting to Spotify login:', loginUrl)
-      window.open(loginUrl, '_blank')
-    }
 
     await joinGame()
     document.getElementById('startGameBtn').style.display = 'inline-block'
