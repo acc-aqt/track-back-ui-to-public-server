@@ -298,7 +298,7 @@ async function joinGame () {
 async function createGame (musicServiceType) {
   serverUrl = getServerUrl()
   username = document.getElementById('username').value
-  gameId = `${username}'s game session`
+  gameId = `Session${username}`
 
   if (!gameId || !username) {
     alert('Please enter both a username and a game ID!')
@@ -326,7 +326,7 @@ async function createGame (musicServiceType) {
     
     const loginUrl = `${serverUrl}/spotify-login?state=${stateParam}`
     window.open(loginUrl, '_blank')
-    
+
     document.getElementById('createSpotifyGameBtn').style.display = 'none'
     document.getElementById('createAppleMusicGameBtn').style.display = 'none'
     document.getElementById('joinGameBtn').style.display = 'block'
