@@ -322,7 +322,9 @@ async function createGame (musicServiceType) {
     )}&target_song_count=${targetSongCount}`
     document.getElementById('createSpotifyGameBtn').style.display = 'none'
     document.getElementById('createAppleMusicGameBtn').style.display = 'none'
-    document.getElementById('joinGameBtn').style.display = 'inline-block'
+    document.getElementById('joinGameBtn').style.display = 'block'
+    document.getElementById('startGameBtn').style.display = 'none'
+
     userHostingSpotifySession = true
     window.open(loginUrl, '_blank')
 
