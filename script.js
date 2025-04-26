@@ -311,15 +311,22 @@ async function createGame (musicServiceType) {
     return
   }
 
+  if (musicServiceType === 'spotify') {
+    // ✨ Spotify: first login
+    const loginUrl = `${serverUrl}/spotify-login?game_id=${encodeURIComponent(
+      gameId
+    )}&target_song_count=${targetSongCount}`
+    window.open(loginUrl, '_blank')
+    log(`🎮 Created new spotify game session: ${gameId}`)
+    // user returns later and clicks Join
+    document.getElementById('createSpotifyGameBtn').style.display = 'none'
+    document.getElementById('createAppleMusicGameBtn').style.display = 'none'
+
+    return
+  }
+
   try {
-    if (musicServiceType === 'spotify') {
-      // ✨ Spotify: first login
-      const loginUrl = `${serverUrl}/spotify-login?game_id=${encodeURIComponent(
-        gameId
-      )}&target_song_count=${targetSongCount}`
-      window.open(loginUrl, '_blank')
-      // user returns later and clicks Join
-    } else if (musicServiceType === 'applemusic') {
+    if (musicServiceType === 'applemusic') {
       // ✨ AppleMusic: direct creation
 
       const res = await fetch(`${serverUrl}/create`, {
@@ -336,7 +343,6 @@ async function createGame (musicServiceType) {
     console.error('❌ Failed to create game:', err)
     return
   }
-  log(`🎮 Created new ${musicServiceType} game session: ${gameId}`)
 
   await joinGame()
   document.getElementById('startGameBtn').style.display = 'inline-block'
