@@ -311,36 +311,35 @@ async function createGame (musicServiceType) {
     return
   }
 
-  if (musicServiceType === 'spotify') {
-    const loginUrl = `${serverUrl}/spotify-login?game_id=${gameId}`
-    console.log('🔐 Redirecting to Spotify login:', loginUrl)
-    window.open(loginUrl, '_blank')
-  }
-
   try {
-    const res = await fetch(`${serverUrl}/create`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        game_id: gameId,
-        target_song_count: targetSongCount,
-        music_service_type: musicServiceType
+    if (musicServiceType === 'spotify') {
+      // ✨ Spotify: first login
+      const loginUrl = `${serverUrl}/spotify-login?game_id=${encodeURIComponent(
+        gameId
+      )}&target_song_count=${targetSongCount}`
+      window.open(loginUrl, '_blank')
+      // user returns later and clicks Join
+    } else if (musicServiceType === 'applemusic') {
+      // ✨ AppleMusic: direct creation
+
+      const res = await fetch(`${serverUrl}/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          game_id: gameId,
+          target_song_count: targetSongCount,
+          music_service_type: musicServiceType
+        })
       })
-    })
-
-    const data = await res.json()
-    if (!res.ok) {
-      log(`❌ Error creating game: ${data.detail}`)
-      return
     }
-
-    log(`🎮 Created new ${musicServiceType} game session: ${gameId}`)
-
-    await joinGame()
-    document.getElementById('startGameBtn').style.display = 'inline-block'
   } catch (err) {
     console.error('❌ Failed to create game:', err)
+    return
   }
+  log(`🎮 Created new ${musicServiceType} game session: ${gameId}`)
+
+  await joinGame()
+  document.getElementById('startGameBtn').style.display = 'inline-block'
 }
 
 document.getElementById('createSpotifyGameBtn').onclick = () =>
