@@ -2,6 +2,21 @@ let socket
 let gameId
 let username
 let songCount = 0
+// let userAboutToLoginToSpotify = false
+// document.addEventListener('visibilitychange', () => {
+//   if (userLoggingInToSpotify) {
+//     console.log('🧹 Tab became active again — refreshing UI')
+//     refreshUI()
+//   }
+// })
+
+// function refreshUI () {
+//   if (userAboutToLoginToSpotify) {
+//     document.getElementById('createSpotifyGameBtn').style.display = 'none'
+//     document.getElementById('createAppleMusicGameBtn').style.display = 'none'
+//     document.getElementById('joinGameBtn').style.display = 'inline-block'
+//   }
+// }
 
 function getServerUrl () {
   const input = document.getElementById('server')
@@ -285,7 +300,7 @@ async function joinGame () {
     connectWebSocket()
     document.getElementById('createSpotifyGameBtn').style.display = 'none'
     document.getElementById('createAppleMusicGameBtn').style.display = 'none'
-    document.getElementById('joinGameBtn').style.display = 'none'
+    document.getElementById('joinGameBtn').style.display = 'inline-block'
   } catch (err) {
     console.error('❌ Failed to join game:', err)
   }
@@ -316,11 +331,13 @@ async function createGame (musicServiceType) {
     const loginUrl = `${serverUrl}/spotify-login?game_id=${encodeURIComponent(
       gameId
     )}&target_song_count=${targetSongCount}`
-    window.open(loginUrl, '_blank')
-    log(`🎮 Created new spotify game session: ${gameId}`)
-    // user returns later and clicks Join
     document.getElementById('createSpotifyGameBtn').style.display = 'none'
     document.getElementById('createAppleMusicGameBtn').style.display = 'none'
+    document.getElementById('joinGameBtn').style.display = 'inline-block'
+    window.open(loginUrl, '_blank')
+
+    log(`🎮 Created new spotify game session: ${gameId}`)
+    // user returns later and clicks Join
 
     return
   }
