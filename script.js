@@ -317,9 +317,16 @@ async function createGame (musicServiceType) {
 
   if (musicServiceType === 'spotify') {
     // ✨ Spotify: first login
-    const loginUrl = `${serverUrl}/spotify-login?game_id=${encodeURIComponent(
-      gameId
-    )}&target_song_count=${targetSongCount}`
+    const stateObject = {
+      game_id: gameId,
+      target_song_count: targetSongCount
+    }
+    
+    const stateParam = encodeURIComponent(JSON.stringify(stateObject))
+    
+    const loginUrl = `${serverUrl}/spotify-login?state=${stateParam}`
+    window.open(loginUrl, '_blank')
+    
     document.getElementById('createSpotifyGameBtn').style.display = 'none'
     document.getElementById('createAppleMusicGameBtn').style.display = 'none'
     document.getElementById('joinGameBtn').style.display = 'block'
