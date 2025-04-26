@@ -2,21 +2,7 @@ let socket
 let gameId
 let username
 let songCount = 0
-// let userAboutToLoginToSpotify = false
-// document.addEventListener('visibilitychange', () => {
-//   if (userLoggingInToSpotify) {
-//     console.log('🧹 Tab became active again — refreshing UI')
-//     refreshUI()
-//   }
-// })
-
-// function refreshUI () {
-//   if (userAboutToLoginToSpotify) {
-//     document.getElementById('createSpotifyGameBtn').style.display = 'none'
-//     document.getElementById('createAppleMusicGameBtn').style.display = 'none'
-//     document.getElementById('joinGameBtn').style.display = 'inline-block'
-//   }
-// }
+let userHostingSpotifySession = false
 
 function getServerUrl () {
   const input = document.getElementById('server')
@@ -298,9 +284,12 @@ async function joinGame () {
 
     log(`✅ Joined game: ${gameId}`)
     connectWebSocket()
+    if (userHostingSpotifySession) {
+      document.getElementById('startGameBtn').style.display = 'block'
+    }
     document.getElementById('createSpotifyGameBtn').style.display = 'none'
     document.getElementById('createAppleMusicGameBtn').style.display = 'none'
-    document.getElementById('joinGameBtn').style.display = 'inline-block'
+    document.getElementById('joinGameBtn').style.display = 'none'
   } catch (err) {
     console.error('❌ Failed to join game:', err)
   }
@@ -334,6 +323,7 @@ async function createGame (musicServiceType) {
     document.getElementById('createSpotifyGameBtn').style.display = 'none'
     document.getElementById('createAppleMusicGameBtn').style.display = 'none'
     document.getElementById('joinGameBtn').style.display = 'inline-block'
+    userHostingSpotifySession = true
     window.open(loginUrl, '_blank')
 
     log(`🎮 Created new spotify game session: ${gameId}`)
@@ -379,15 +369,18 @@ document.getElementById('joinGameBtn').onclick = async () => {
     return
   }
 
+  const res = await fetch(`${serverUrl}/list-sessions`)
+  const data = await res.json()
+
+  if (!res.ok || !data.sessions.length) {
+    alert('❌ No game sessions available to join.')
+    return
+  }
+  if (userHostingSpotifySession) {
+    await joinGame()
+    return
+  }
   try {
-    const res = await fetch(`${serverUrl}/list-sessions`)
-    const data = await res.json()
-
-    if (!res.ok || !data.sessions.length) {
-      alert('❌ No game sessions available to join.')
-      return
-    }
-
     // Ask the user to pick one session
     const gameIdSelection = prompt(
       `🎮 Available sessions:\n${data.sessions
