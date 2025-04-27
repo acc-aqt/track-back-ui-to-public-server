@@ -15,25 +15,6 @@ function startApp () {
   serverUrl = getServerUrl()
 }
 
-function isLocalUrl (url) {
-  try {
-    console.log('Parsing URL:', url)
-    const parsed = new URL(url)
-    const host = parsed.hostname
-    console.log('Parsed host:', host)
-    return (
-      host === 'localhost' ||
-      host === '127.0.0.1' ||
-      host.startsWith('192.168.') ||
-      host.startsWith('10.') ||
-      host.endsWith('.local')
-    )
-  } catch (e) {
-    console.log('Parsed host, got exception:', e)
-    return false
-  }
-}
-
 let currentGuessSong = null
 let pauseAfterGuess = false
 let queuedTurn = null
