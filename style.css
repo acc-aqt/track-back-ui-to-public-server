@@ -72,6 +72,7 @@ body {
   border-radius: 6px;
   background-color: var(--bg-light);
   text-align: center;
+  text-align-last: center;
   color: var(--text-dark);
 }
 
@@ -250,4 +251,23 @@ label[for="username"]{
 .fade-out {
   opacity: 0;
   transition: opacity 1s ease-out;
+}
+
+/* Chrome, Edge, Safari */
+
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+appearance: none;
+  background: var(--bg-light); /* Same as input background */
+  color: var(--text-dark); /* Same as your dark text */
+  border-radius: 6px; /* Match your input style */
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Firefox */
+input[type="number"] {
+  /* Do NOT use -moz-appearance: textfield if you want to keep arrows */
 }

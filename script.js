@@ -28,6 +28,17 @@ const log = msg => {
   logBox.scrollTop = logBox.scrollHeight
 }
 
+const targetSongCountInput = document.getElementById('targetSongCountInput')
+
+targetSongCountInput.addEventListener('input', () => {
+  let value = targetSongCountInput.value.trim()
+
+  // Only allow positive integers
+  if (!/^\d+$/.test(value) || parseInt(value) <= 0) {
+    targetSongCountInput.value = '' // Clear invalid input
+  }
+})
+
 const buildSongEntry = (song, id = '', extra = '') => {
   return `
     <div class="song-entry ${extra}" ${id ? `id="${id}"` : ''}>
