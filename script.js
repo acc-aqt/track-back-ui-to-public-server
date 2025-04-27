@@ -11,6 +11,10 @@ function getServerUrl () {
   return configValue || ''
 }
 
+function startApp () {
+  serverUrl = getServerUrl()
+}
+
 function isLocalUrl (url) {
   try {
     console.log('Parsing URL:', url)
