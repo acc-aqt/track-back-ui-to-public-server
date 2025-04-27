@@ -31,7 +31,9 @@ body {
     font-size: clamp(1.2rem, 5vw, 2rem); /* ✨ Responsive font size */
     margin-bottom: 1rem;
   }
-  
+
+
+
   #controls {
   background: var(--section-main);
   padding: 1rem;
@@ -97,6 +99,12 @@ body {
 
 .input-group-configure-game[hidden] {
   display: none !important;
+}
+
+label[for="username"]{
+  font-family: 'Press Start 2P', sans-serif;
+  color: black;
+
 }
 
 
