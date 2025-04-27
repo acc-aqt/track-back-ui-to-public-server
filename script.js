@@ -377,6 +377,8 @@ async function createGame () {
 
     const loginUrl = `${serverUrl}/spotify-login?state=${stateParam}`
     // spotify
+    document.getElementById('joinGameBtn').innerHTML =
+      'After login to Spotify: 📻&thinsp;🔑<br>Join the new game session 👋🏻'
     document.getElementById('joinGameBtn').style.display = 'block'
     document.getElementById('startGameBtn').style.display = 'none'
 
