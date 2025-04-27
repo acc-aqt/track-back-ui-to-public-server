@@ -5,29 +5,10 @@ let songCount = 0
 let userHostingSpotifySession = false
 
 function getServerUrl () {
-  const input = document.getElementById('server')
-  const inputValue = input?.value?.trim()?.replace(/\/+\$/, '') || ''
-
   const configValue =
     (window.TRACK_BACK_CONFIG || {}).TRACK_BACK_SERVER_URL || ''
 
-  return inputValue || configValue || ''
-}
-
-function startApp () {
-  serverUrl = getServerUrl()
-  const serverInput = document.getElementById('server')
-  const serverLabel = document.getElementById('server-label')
-
-  if (serverUrl && isLocalUrl(serverUrl)) {
-    console.log('🌍 Using local server:', serverUrl)
-
-    serverInput.value = serverUrl
-    serverInput.style.display = 'inline-block'
-  } else {
-    console.log('🚫 Not a local URL, keeping server input hidden.')
-    console.log('🛠️ Final config:', window.TRACK_BACK_CONFIG)
-  }
+  return configValue || ''
 }
 
 function isLocalUrl (url) {

@@ -21,6 +21,16 @@ body {
     align-items: center;
     text-align: center;
   }
+
+  h1 {
+    font-family: 'Press Start 2P', sans-serif;
+    text-align: center;
+    white-space: nowrap; /* ✨ Prevent line breaks */
+    overflow: hidden;    /* ✨ Just in case */
+    text-overflow: ellipsis; /* ✨ Add ... if text somehow overflows */
+    font-size: clamp(1.2rem, 5vw, 2rem); /* ✨ Responsive font size */
+    margin-bottom: 1rem;
+  }
   
   #controls {
   background: var(--section-main);
@@ -167,6 +177,7 @@ body {
 
 .song-details {
   flex: 1;
+  text-align: left;
 }
 
 .highlight {
