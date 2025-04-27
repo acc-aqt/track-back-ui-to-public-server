@@ -16,28 +16,68 @@
     <h1>🎵&thinsp;TrackBack&thinsp;🎵</h1>
 
     <div id="controls">
-      <label id="server-label" style="display: none">
-        <!-- is only displayed if its a local url -->
-        <!-- is set in server_config(.example).js -->
-        Server&thinsp;🪩<br />
+      <div class="input-group">
+        <label for="server">Server&thinsp;🪩</label>
         <input
+          type="text"
           id="server"
-          placeholder="e.g. http://192.168.x.x:4200"
-          size="30"
+          placeholder="e.g. http://localhost:4200"
           style="display: none"
         />
-      </label>
-      <label>
-        Username&thinsp;👩🏻‍🎤<br />
-        <input id="username" size="30" />
-      </label>
-      <button id="createSpotifyGameBtn">Host Spotify Game 📻🎶</button>
-      <button id="createAppleMusicGameBtn">Host Apple Music Game 🍎🎶</button>      
-      <button id="joinGameBtn">Join a Game 👋🏻</button>
-      <button id="startGameBtn" style="display: none">
-        All players connected? Start!<br />
-        👩🏻‍🎤👨🏽‍🎤🧑🏻‍🎤👩🏽‍🎤👨🏻‍🎤🧑🏽‍🎤
-      </button>
+      </div>
+
+      <div class="input-group">
+        <label for="username">Username&thinsp;👩🏻‍🎤</label>
+        <input type="text" id="username" />
+      </div>
+
+      <div class="input-group">
+        <button id="configureGameBtn">Configure new Game Session</button>
+      </div>
+      <div class="input-group input-group-configure-game" hidden>
+        <label id="musicServiceDropdownLabel" for="musicServiceDropdown"
+          >Choose a music service:</label
+        >
+        <select id="musicServiceDropdown">
+          <option value="spotify">Spotify 📻🎶</option>
+          <option value="applemusic">Apple Music 🍎🎶</option>
+        </select>
+      </div>
+
+      <div class="input-group input-group-configure-game" hidden>
+        <label id="gameIdInputLabel" for="gameIdInput"
+          >Game Session Name:</label
+        >
+        <input type="text" id="gameIdInput" />
+      </div>
+
+      <div class="input-group input-group-configure-game" hidden>
+        <label id="targetSongCountInputLabel" for="targetSongCountInput"
+          >Target Song Count:</label
+        >
+        <input id="targetSongCountInput" type="number" value="10" min="1" />
+      </div>
+
+      <div class="input-group input-group-configure-game" hidden>
+        <button id="createGameBtn">Create new Game Session</button>
+      </div>
+      <div class="input-group">
+        <button id="joinGameBtn">Join a Game 👋🏻</button>
+      </div>
+      <div class="input-group">
+        <select id="sessionDropdown" style="display: none"></select>
+      </div>
+      <div class="input-group">
+        <button id="joinSelectedSessionBtn" style="display: none">
+          Join Selected Session
+        </button>
+      </div>
+      <div class="input-group">
+        <button id="startGameBtn" style="display: none">
+          All players connected? Start!<br />
+          👩🏻‍🎤👨🏽‍🎤🧑🏻‍🎤👩🏽‍🎤👨🏻‍🎤🧑🏽‍🎤
+        </button>
+      </div>
     </div>
 
     <div id="game" style="display: none">

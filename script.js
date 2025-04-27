@@ -24,7 +24,6 @@ function startApp () {
 
     serverInput.value = serverUrl
     serverInput.style.display = 'inline-block'
-    serverLabel.style.display = 'inline-block'
   } else {
     console.log('🚫 Not a local URL, keeping server input hidden.')
     console.log('🛠️ Final config:', window.TRACK_BACK_CONFIG)
@@ -242,6 +241,8 @@ function connectWebSocket () {
       handleGuessResult(data)
     } else if (type === 'welcome') {
       log(`👋🏻 ${data.message}`)
+    } else if (type === 'player_joined') {
+      log(`👋🏻 ${data.message}`)
     } else if (type === 'game_start') {
       log(`🎮 ${data.message}`)
     } else if (type === 'error') {
@@ -269,6 +270,55 @@ function connectWebSocket () {
   }
 }
 
+async function listAndChooseGameSessions () {
+  try {
+    document.getElementById('joinGameBtn').style.display = 'none'
+    const res = await fetch(`${serverUrl}/list-sessions`)
+    const data = await res.json()
+
+    const sessions = data.sessions || []
+    const dropdown = document.getElementById('sessionDropdown')
+    const joinButton = document.getElementById('joinSelectedSessionBtn')
+
+    // Clear previous options
+    dropdown.innerHTML = ''
+
+    if (sessions.length === 0) {
+      alert('❌ No available game sessions.')
+      return
+    }
+
+    // Fill the dropdown
+    sessions.forEach((sessionId, index) => {
+      const option = document.createElement('option')
+      option.value = sessionId
+      option.textContent = `${index + 1}. ${sessionId}`
+      dropdown.appendChild(option)
+    })
+
+    // Show the dropdown and button
+    dropdown.style.display = 'inline-block'
+    joinButton.style.display = 'inline-block'
+
+    joinButton.onclick = async () => {
+      const selectedGameId = dropdown.value
+      if (!selectedGameId) {
+        alert('❌ Please select a session.')
+        return
+      }
+      gameId = selectedGameId
+      await joinGame()
+
+      // Hide dropdown after join
+      dropdown.style.display = 'none'
+      joinButton.style.display = 'none'
+    }
+  } catch (err) {
+    console.error('❌ Failed to fetch sessions:', err)
+    alert('⚠️ Failed to fetch game sessions.')
+  }
+}
+
 async function joinGame () {
   try {
     const res = await fetch(`${serverUrl}/join`, {
@@ -287,33 +337,57 @@ async function joinGame () {
     if (userHostingSpotifySession) {
       document.getElementById('startGameBtn').style.display = 'block'
     }
-    document.getElementById('createSpotifyGameBtn').style.display = 'none'
-    document.getElementById('createAppleMusicGameBtn').style.display = 'none'
     document.getElementById('joinGameBtn').style.display = 'none'
   } catch (err) {
     console.error('❌ Failed to join game:', err)
   }
 }
 
-async function createGame (musicServiceType) {
+async function configureGame () {
+  username = document.getElementById('username').value
+
+  if (!username) {
+    alert('Please enter a username!')
+    return
+  }
+  const groups = document.querySelectorAll('.input-group-configure-game')
+  groups.forEach(group => {
+    group.hidden = false
+  })
+  document.getElementById('configureGameBtn').style.display = 'none'
+  document.getElementById('joinGameBtn').style.display = 'none'
+
+  document.getElementById('gameIdInput').value = `Game-by-${username}`
+}
+
+async function createGame () {
   serverUrl = getServerUrl()
   username = document.getElementById('username').value
-  gameId = `Session${username}`
+  songCountInput = document.getElementById('targetSongCountInput').value.trim()
+
+  const groups = document.querySelectorAll('.input-group-configure-game')
+  groups.forEach(group => {
+    group.hidden = true
+  })
+  document.getElementById('joinGameBtn').style.display = 'block'
+
+  targetSongCount = parseInt(songCountInput)
+
+  if (isNaN(targetSongCount) || targetSongCount <= 0) {
+    alert('⚠️ Please enter a valid number greater than 0 for songs!')
+    return
+  }
+
+  const gameIdInput = document.getElementById('gameIdInput').value.trim()
+
+  gameId = encodeURIComponent(gameIdInput)
 
   if (!gameId || !username) {
     alert('Please enter both a username and a game ID!')
     return
   }
 
-  const targetSongCount = parseInt(
-    prompt('🎵 how many songs do you want to play?'),
-    10
-  )
-
-  if (isNaN(targetSongCount) || targetSongCount <= 0) {
-    alert('⚠️ Please enter a valid number greater than 0!')
-    return
-  }
+  musicServiceType = document.getElementById('musicServiceDropdown').value
 
   if (musicServiceType === 'spotify') {
     // ✨ Spotify: first login
@@ -321,14 +395,11 @@ async function createGame (musicServiceType) {
       game_id: gameId,
       target_song_count: targetSongCount
     }
-    
-    const stateParam = encodeURIComponent(JSON.stringify(stateObject))
-    
-    const loginUrl = `${serverUrl}/spotify-login?state=${stateParam}`
-    window.open(loginUrl, '_blank')
 
-    document.getElementById('createSpotifyGameBtn').style.display = 'none'
-    document.getElementById('createAppleMusicGameBtn').style.display = 'none'
+    const stateParam = encodeURIComponent(JSON.stringify(stateObject))
+
+    const loginUrl = `${serverUrl}/spotify-login?state=${stateParam}`
+    // spotify
     document.getElementById('joinGameBtn').style.display = 'block'
     document.getElementById('startGameBtn').style.display = 'none'
 
@@ -337,12 +408,8 @@ async function createGame (musicServiceType) {
 
     log(`🎮 Created new spotify game session: ${gameId}`)
     // user returns later and clicks Join
-
-    return
-  }
-
-  try {
-    if (musicServiceType === 'applemusic') {
+  } else if (musicServiceType === 'applemusic') {
+    try {
       // ✨ AppleMusic: direct creation
 
       const res = await fetch(`${serverUrl}/create`, {
@@ -354,20 +421,21 @@ async function createGame (musicServiceType) {
           music_service_type: musicServiceType
         })
       })
+    } catch (err) {
+      console.error('❌ Failed to create apple music game:', err)
+      return
     }
-  } catch (err) {
-    console.error('❌ Failed to create game:', err)
-    return
-  }
+    console.error('Successfully created apple music game')
 
-  await joinGame()
-  document.getElementById('startGameBtn').style.display = 'inline-block'
+    await joinGame()
+    // apple
+    // document.getElementById('joinGameBtn').style.display = 'none'
+    document.getElementById('startGameBtn').style.display = 'block'
+  }
 }
 
-document.getElementById('createSpotifyGameBtn').onclick = () =>
-  createGame('spotify')
-document.getElementById('createAppleMusicGameBtn').onclick = () =>
-  createGame('applemusic')
+document.getElementById('configureGameBtn').onclick = () => configureGame()
+document.getElementById('createGameBtn').onclick = () => createGame()
 
 document.getElementById('joinGameBtn').onclick = async () => {
   serverUrl = getServerUrl()
@@ -389,29 +457,8 @@ document.getElementById('joinGameBtn').onclick = async () => {
     await joinGame()
     return
   }
-  try {
-    // Ask the user to pick one session
-    const gameIdSelection = prompt(
-      `🎮 Available sessions:\n${data.sessions
-        .map((s, idx) => `${idx + 1}. ${s}`)
-        .join('\n')}\n\nEnter number of session to join:`
-    )
-
-    const selectedIndex = parseInt(gameIdSelection, 10) - 1
-    if (
-      isNaN(selectedIndex) ||
-      selectedIndex < 0 ||
-      selectedIndex >= data.sessions.length
-    ) {
-      alert('❌ Invalid selection.')
-      return
-    }
-
-    gameId = data.sessions[selectedIndex]
-    await joinGame()
-  } catch (err) {
-    console.error('❌ Failed to fetch sessions:', err)
-  }
+  // Ask the user to pick one session
+  await listAndChooseGameSessions()
 }
 
 document.getElementById('startGameBtn').onclick = async () => {
