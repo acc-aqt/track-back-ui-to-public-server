@@ -20,50 +20,69 @@
         <label for="username">Username&thinsp;👩🏻‍🎤</label>
         <input type="text" id="username" />
       </div>
+    </div>
 
+    <div id="controls-new-or-join">
       <div class="input-group">
         <button id="configureGameBtn">Configure new Game Session</button>
       </div>
-      <div class="input-group input-group-configure-game" hidden>
-        <label id="musicServiceDropdownLabel" for="musicServiceDropdown"
-          >Choose a music service:</label
-        >
+      <div class="input-group">
+        <button id="joinGameBtn">Join a Game 👋🏻</button>
+      </div>
+    </div>
+
+    <div id="joinGameConfigBox" class="config-box" hidden>
+      <div id="joinGameTitle" class="config-title">Select game to join</div>
+
+      <div class="input-group">
+        <select id="sessionDropdown"></select>
+      </div>
+      <div class="input-group">
+        <button id="joinSelectedSessionBtn">Join Selected Session</button>
+      </div>
+    </div>
+
+    <div id="gameConfigBox" class="config-box" hidden>
+      <div class="config-title">Game Setup 🎮</div>
+
+      <div class="input-group">
+        <label id="musicServiceDropdownLabel" for="musicServiceDropdown">
+          Choose a music service:
+        </label>
         <select id="musicServiceDropdown">
           <option value="spotify">Spotify 📻🎶</option>
           <option value="applemusic">Apple Music 🍎🎶</option>
         </select>
       </div>
 
-      <div class="input-group input-group-configure-game" hidden>
-        <label id="gameIdInputLabel" for="gameIdInput"
-          >Game Session Name:</label
-        >
+      <div class="input-group">
+        <label id="gameIdInputLabel" for="gameIdInput">
+          Game Session Name:
+        </label>
         <input type="text" id="gameIdInput" />
       </div>
 
-      <div class="input-group input-group-configure-game" hidden>
-        <label id="targetSongCountInputLabel" for="targetSongCountInput"
-          >Target Song Count:</label
-        >
-        <input id="targetSongCountInput" type="number" value="10" min="1" step="1" required/>
+      <div class="input-group">
+        <label id="targetSongCountInputLabel" for="targetSongCountInput">
+          Target Song Count:
+        </label>
+        <input
+          id="targetSongCountInput"
+          type="number"
+          value="10"
+          min="1"
+          step="1"
+          required
+        />
       </div>
 
-      <div class="input-group input-group-configure-game" hidden>
+      <div class="input-group">
         <button id="createGameBtn">Create new Game Session</button>
       </div>
+    </div>
+    <div id="controls-start" hidden>
       <div class="input-group">
-        <button id="joinGameBtn">Join a Game 👋🏻</button>
-      </div>
-      <div class="input-group">
-        <select id="sessionDropdown" style="display: none"></select>
-      </div>
-      <div class="input-group">
-        <button id="joinSelectedSessionBtn" style="display: none">
-          Join Selected Session
-        </button>
-      </div>
-      <div class="input-group">
-        <button id="startGameBtn" style="display: none">
+        <button id="startGameBtn">
           All players connected? Start!<br />
           👩🏻‍🎤👨🏽‍🎤🧑🏻‍🎤👩🏽‍🎤👨🏻‍🎤🧑🏽‍🎤
         </button>

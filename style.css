@@ -34,7 +34,12 @@ body {
 
 
 
-  #controls {
+  #controls,
+  #controls-new-or-join,
+  #controls-start,
+  #gameConfigBox,
+  #joinGameConfigBox
+   {
   background: var(--section-main);
   padding: 1rem;
   margin-bottom: 1rem;
@@ -44,6 +49,14 @@ body {
   align-items: center;
   text-align: center;
   gap: 0.75rem; /* 🌟 This controls even spacing between ALL children */
+}
+
+#controls[hidden],
+#controls-new-or-join[hidden],
+#controls-start[hidden],
+#gameConfigBox[hidden],
+#joinGameConfigBox[hidden] {
+  display: none !important;
 }
 
 .input-group {
@@ -271,3 +284,25 @@ appearance: none;
 input[type="number"] {
   /* Do NOT use -moz-appearance: textfield if you want to keep arrows */
 }
+
+/* .config-box {
+  background: var(--section-main);
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 2px dashed var(--accent);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+} */
+
+.config-title {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: black;
+  text-align: center;
+}
+

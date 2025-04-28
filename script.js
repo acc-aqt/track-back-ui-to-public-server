@@ -249,7 +249,8 @@ function connectWebSocket () {
 
 async function listAndChooseGameSessions () {
   try {
-    document.getElementById('joinGameBtn').style.display = 'none'
+    document.getElementById('joinGameConfigBox').hidden = false
+
     const res = await fetch(`${serverUrl}/list-sessions`)
     const data = await res.json()
 
@@ -312,9 +313,9 @@ async function joinGame () {
     log(`✅ Joined game: ${gameId}`)
     connectWebSocket()
     if (userHostingSpotifySession) {
-      document.getElementById('startGameBtn').style.display = 'block'
+      document.getElementById('controls-start').style.display = false
     }
-    document.getElementById('joinGameBtn').style.display = 'none'
+    document.getElementById('joinGameConfigBox').hidden = true
   } catch (err) {
     console.error('❌ Failed to join game:', err)
   }
@@ -327,12 +328,9 @@ async function configureGame () {
     alert('Please enter a username!')
     return
   }
-  const groups = document.querySelectorAll('.input-group-configure-game')
-  groups.forEach(group => {
-    group.hidden = false
-  })
-  document.getElementById('configureGameBtn').style.display = 'none'
-  document.getElementById('joinGameBtn').style.display = 'none'
+  document.getElementById('gameConfigBox').hidden = false
+
+  document.getElementById('controls-new-or-join').hidden = true
 
   document.getElementById('gameIdInput').value = `Game-by-${username}`
 }
@@ -342,11 +340,14 @@ async function createGame () {
   username = document.getElementById('username').value
   songCountInput = document.getElementById('targetSongCountInput').value.trim()
 
-  const groups = document.querySelectorAll('.input-group-configure-game')
-  groups.forEach(group => {
-    group.hidden = true
-  })
-  document.getElementById('joinGameBtn').style.display = 'block'
+  // const groups = document.querySelectorAll('.input-group-configure-game')
+  // groups.forEach(group => {
+  //   group.hidden = true
+  // })
+  document.getElementById('gameConfigBox').hidden = true
+  document.getElementById('controls-start').hidden = false
+
+  // document.getElementById('joinGameBtn').style.display = 'block'
 
   targetSongCount = parseInt(songCountInput)
 
@@ -379,8 +380,16 @@ async function createGame () {
     // spotify
     document.getElementById('joinGameBtn').innerHTML =
       'After login to Spotify: 📻&thinsp;🔑<br>Join the new game session 👋🏻'
+
+    document.getElementById('controls-new-or-join').hidden = false
+    document.getElementById('joinGameTitle').style.display = 'none'
+    document.getElementById('sessionDropdown').style.display = 'none'
+
     document.getElementById('joinGameBtn').style.display = 'block'
+    document.getElementById('controls-start').hidden = true
+
     document.getElementById('startGameBtn').style.display = 'none'
+    document.getElementById('configureGameBtn').style.display = 'none'
 
     userHostingSpotifySession = true
     window.open(loginUrl, '_blank')
@@ -424,6 +433,7 @@ document.getElementById('joinGameBtn').onclick = async () => {
     alert('Please enter a username!')
     return
   }
+  document.getElementById('controls-new-or-join').hidden = true
 
   const res = await fetch(`${serverUrl}/list-sessions`)
   const data = await res.json()
@@ -460,7 +470,7 @@ document.getElementById('startGameBtn').onclick = async () => {
     console.error('❌ Failed to start game:', err)
   }
 
-  document.getElementById('startGameBtn').style.display = 'none'
+  document.getElementById('controls-start').hidden = true
   document.getElementById('songListHeader').style.display = 'block'
   document.getElementById('songTimeline').style.display = 'block'
   document.getElementById('songCount').style.display = 'block'
