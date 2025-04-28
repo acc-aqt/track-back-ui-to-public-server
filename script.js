@@ -19,8 +19,8 @@ let currentGuessSong = null
 let pauseAfterGuess = false
 let queuedTurn = null
 
-const WRONG_GUESS_DISPLAY_TIME = 1500 // How long the wrong guess stays visible
-const FADE_DURATION = 500 // Duration of fade-out animation
+const WRONG_GUESS_DISPLAY_TIME = 2000 // How long the wrong guess stays visible
+const FADE_DURATION = 1000 // Duration of fade-out animation
 
 const log = msg => {
   const logBox = document.getElementById('log')
