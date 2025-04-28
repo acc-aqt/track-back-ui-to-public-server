@@ -97,7 +97,10 @@ function handleYourTurn (data) {
   const dummyCovers = [
     'dummy-cover/cover1.png',
     'dummy-cover/cover2.png',
-    'dummy-cover/cover3.png'
+    'dummy-cover/cover3.png',
+    'dummy-cover/cover4.png',
+    'dummy-cover/cover5.png',
+    'dummy-cover/cover6.png'
   ]
   const randomCover =
     dummyCovers[Math.floor(Math.random() * dummyCovers.length)]
@@ -275,7 +278,6 @@ async function listAndChooseGameSessions () {
       dropdown.appendChild(option)
     })
 
-
     joinButton.onclick = async () => {
       const selectedGameId = dropdown.value
       if (!selectedGameId) {
@@ -287,7 +289,6 @@ async function listAndChooseGameSessions () {
       }
       gameId = selectedGameId
       await joinGame()
-
     }
   } catch (err) {
     console.error('❌ Failed to fetch sessions:', err)
@@ -344,7 +345,6 @@ async function createGame () {
   // })
   document.getElementById('gameConfigBox').hidden = true
   document.getElementById('controls-start').hidden = false
-
 
   targetSongCount = parseInt(songCountInput)
 
@@ -422,7 +422,6 @@ async function createGame () {
     console.error('Successfully created apple music game')
 
     await joinGame()
-
   }
 }
 
