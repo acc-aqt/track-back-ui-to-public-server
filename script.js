@@ -91,6 +91,7 @@ function handleYourTurn (data) {
   document.getElementById('songListHeader').style.display = 'block'
   document.getElementById('songTimeline').style.display = 'block'
   document.getElementById('songCount').style.display = 'block'
+  document.getElementById('controls-waiting-for-start').hidden = true
 
   const list = data.song_list || []
   const dummyCovers = [
@@ -225,7 +226,7 @@ function connectWebSocket () {
     } else if (type === 'error') {
       log(`🚨 Error: ${data.message}`)
     } else if (type === 'other_player_guess') {
-      log(`🧑🏽‍🎤 ${data.player} guessed: ${data.message}`)
+      log(`🧑🏽‍🎤 ${data.message}`)
     } else if (type === 'game_over') {
       log(`🏁 Game Over! Winner: ${data.winner}`)
 
@@ -274,9 +275,6 @@ async function listAndChooseGameSessions () {
       dropdown.appendChild(option)
     })
 
-    // Show the dropdown and button
-    dropdown.style.display = 'inline-block'
-    joinButton.style.display = 'inline-block'
 
     joinButton.onclick = async () => {
       const selectedGameId = dropdown.value
@@ -284,12 +282,12 @@ async function listAndChooseGameSessions () {
         alert('❌ Please select a session.')
         return
       }
+      if (!userHostingSpotifySession) {
+        document.getElementById('controls-waiting-for-start').hidden = false
+      }
       gameId = selectedGameId
       await joinGame()
 
-      // Hide dropdown after join
-      dropdown.style.display = 'none'
-      joinButton.style.display = 'none'
     }
   } catch (err) {
     console.error('❌ Failed to fetch sessions:', err)
@@ -314,7 +312,6 @@ async function joinGame () {
     connectWebSocket()
     if (userHostingSpotifySession) {
       document.getElementById('controls-start').hidden = false
-      document.getElementById('startGameBtn').style.display = 'block'
     }
     document.getElementById('joinGameConfigBox').hidden = true
   } catch (err) {
@@ -348,7 +345,6 @@ async function createGame () {
   document.getElementById('gameConfigBox').hidden = true
   document.getElementById('controls-start').hidden = false
 
-  // document.getElementById('joinGameBtn').style.display = 'block'
 
   targetSongCount = parseInt(songCountInput)
 
@@ -426,9 +422,7 @@ async function createGame () {
     console.error('Successfully created apple music game')
 
     await joinGame()
-    // apple
-    // document.getElementById('joinGameBtn').style.display = 'none'
-    document.getElementById('startGameBtn').style.display = 'block'
+
   }
 }
 
@@ -455,6 +449,7 @@ document.getElementById('joinGameBtn').onclick = async () => {
   if (userHostingSpotifySession) {
     await joinGame()
     return
+  } else {
   }
   // Ask the user to pick one session
   await listAndChooseGameSessions()

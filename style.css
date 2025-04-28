@@ -36,6 +36,7 @@ body {
 
   #controls,
   #controls-new-or-join,
+  #controls-waiting-for-start,
   #controls-start,
   #gameConfigBox,
   #joinGameConfigBox
@@ -53,6 +54,7 @@ body {
 
 #controls[hidden],
 #controls-new-or-join[hidden],
+#controls-waiting-for-start[hidden],
 #controls-start[hidden],
 #gameConfigBox[hidden],
 #joinGameConfigBox[hidden] {
