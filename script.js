@@ -313,7 +313,7 @@ async function joinGame () {
     log(`✅ Joined game: ${gameId}`)
     connectWebSocket()
     if (userHostingSpotifySession) {
-      document.getElementById('controls-start').style.display = false
+      document.getElementById('controls-start').hidden = false
     }
     document.getElementById('joinGameConfigBox').hidden = true
   } catch (err) {
