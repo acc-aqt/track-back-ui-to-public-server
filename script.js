@@ -314,6 +314,7 @@ async function joinGame () {
     connectWebSocket()
     if (userHostingSpotifySession) {
       document.getElementById('controls-start').hidden = false
+      document.getElementById('startGameBtn').style.display = 'block'
     }
     document.getElementById('joinGameConfigBox').hidden = true
   } catch (err) {
