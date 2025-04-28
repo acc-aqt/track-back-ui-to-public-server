@@ -491,6 +491,9 @@ const setupDragDrop = () => {
     draggable: '.song-entry',
     filter: ':not(#new-song)',
     preventOnFilter: true,
+    scroll: true,
+    scrollSensitivity: 300,
+    scrollSpeed: 5,
     onAdd: evt => {
       if (evt.item.id === 'new-song') {
         const newIndex = evt.newIndex
