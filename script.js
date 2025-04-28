@@ -409,6 +409,16 @@ async function createGame () {
           music_service_type: musicServiceType
         })
       })
+      if (!res.ok) {
+        const data = await res.json()
+        log(
+          `❌ Failed to create Apple Music game: ${
+            data.detail?.error || 'Unknown error'
+          }`
+        )
+        console.error('Detailed server error:', data)
+        return
+      }
     } catch (err) {
       console.error('❌ Failed to create apple music game:', err)
       return
