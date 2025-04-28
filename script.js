@@ -389,7 +389,6 @@ async function createGame () {
     document.getElementById('joinGameBtn').style.display = 'block'
     document.getElementById('controls-start').hidden = true
 
-    document.getElementById('startGameBtn').style.display = 'none'
     document.getElementById('configureGameBtn').style.display = 'none'
 
     userHostingSpotifySession = true
