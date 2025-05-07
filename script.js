@@ -226,6 +226,10 @@ function connectWebSocket () {
       log(`👋🏻 ${data.message}`)
     } else if (type === 'game_start') {
       log(`🎮 ${data.message}`)
+    } else if (type === 'player_rejoined' && data.user_name === username) {
+      handleYourTurn(data)
+    } else if (type === 'player_rejoined' && data.user_name !== username) {
+      log(`👋🏻 ${data.message}`)
     } else if (type === 'error') {
       log(`🚨 Error: ${data.message}`)
     } else if (type === 'other_player_guess') {
@@ -243,11 +247,15 @@ function connectWebSocket () {
         : `Game over.<br />${data.winner} won the game.`
 
       winnerHeader.style.display = 'block'
+    } else if (type === 'user_disconnected') {
+      log(`❌ ${data.message}`)
+    } else {
+      log(`Unknown message type: ${type}.`)
     }
   }
 
   socket.onclose = () => {
-    log('🔌 Connection closed.')
+    log('❌ Connection closed.')
   }
 }
 
@@ -257,6 +265,15 @@ async function listAndChooseGameSessions () {
 
     const res = await fetch(`${serverUrl}/list-sessions`)
     const data = await res.json()
+    if (!res.ok) {
+      const errorMsg = data.detail?.error || data.detail || 'Unknown error'
+      const stack = data.detail?.stacktrace || ''
+      log(`❌ Server-Exception: ${errorMsg}`)
+      if (stack) {
+        log('Stacktrace:\n', stack)
+      }
+      return
+    }
 
     const sessions = data.sessions || []
     const dropdown = document.getElementById('sessionDropdown')
@@ -306,11 +323,16 @@ async function joinGame () {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ game_id: gameId, user_name: username })
     })
-    const data = await res.json()
     if (!res.ok) {
-      log(`❌ Failed to join game: ${data.detail}`)
+      const errorMsg = data.detail?.error || data.detail || 'Unknown error'
+      const stack = data.detail?.stacktrace || ''
+      log(`❌ Server-Exception: ${errorMsg}`)
+      if (stack) {
+        log('Stacktrace:\n', stack)
+      }
       return false
     }
+    const data = await res.json()
 
     log(`✅ Joined game: ${gameId}`)
     connectWebSocket()
@@ -398,10 +420,8 @@ async function createGame () {
     log(`🎮 Created new spotify game session: ${gameId}`)
 
     // user returns later and clicks Join
-  } else if (musicServiceType === 'applemusic') {
+  } else {
     try {
-      // ✨ AppleMusic: direct creation
-
       const res = await fetch(`${serverUrl}/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -412,20 +432,19 @@ async function createGame () {
         })
       })
       if (!res.ok) {
-        const data = await res.json()
-        log(
-          `❌ Failed to create Apple Music game: ${
-            data.detail?.error || 'Unknown error'
-          }`
-        )
-        console.error('Detailed server error:', data)
+        const errorMsg = data.detail?.error || data.detail || 'Unknown error'
+        const stack = data.detail?.stacktrace || ''
+        log(`❌ Server-Exception: ${errorMsg}`)
+        if (stack) {
+          log('Stacktrace:\n', stack)
+        }
         return
       }
     } catch (err) {
-      console.error('❌ Failed to create apple music game:', err)
+      console.error('❌ Failed to create music game:', err)
       return
     }
-    console.error('Successfully created apple music game')
+    console.error('Successfully created music game')
     document.getElementById('gameConfigBox').hidden = true
     document.getElementById('controls-start').hidden = false
 
@@ -448,7 +467,17 @@ document.getElementById('joinGameBtn').onclick = async () => {
   const res = await fetch(`${serverUrl}/list-sessions`)
   const data = await res.json()
 
-  if (!res.ok || !data.sessions.length) {
+  if (!res.ok) {
+    const errorMsg = data.detail?.error || data.detail || 'Unknown error'
+    const stack = data.detail?.stacktrace || ''
+    log(`❌ Server-Exception: ${errorMsg}`)
+    if (stack) {
+      log('Stacktrace:\n', stack)
+    }
+    return
+  }
+
+  if (!data.sessions.length) {
     alert('❌ No game sessions available to join.')
     return
   }
@@ -475,7 +504,12 @@ document.getElementById('startGameBtn').onclick = async () => {
     })
     const data = await res.json()
     if (!res.ok) {
-      log(`❌ Server-Exception: ${data.detail || 'Unknown error'}`)
+      const errorMsg = data.detail?.error || data.detail || 'Unknown error'
+      const stack = data.detail?.stacktrace || ''
+      log(`❌ Server-Exception: ${errorMsg}`)
+      if (stack) {
+        log('Stacktrace:\n', stack)
+      }
       return
     }
 
