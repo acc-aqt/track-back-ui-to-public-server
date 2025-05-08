@@ -35,6 +35,7 @@ body {
 
 
   #controls,
+  #controls-server,
   #controls-new-or-join,
   #controls-waiting-for-start,
   #controls-start,
@@ -53,6 +54,7 @@ body {
 }
 
 #controls[hidden],
+#controls-server[hidden],
 #controls-new-or-join[hidden],
 #controls-waiting-for-start[hidden],
 #controls-start[hidden],
@@ -117,7 +119,8 @@ body {
   display: none !important;
 }
 
-label[for="username"]{
+label[for="username"],
+label[for="server"]{
   font-family: 'Press Start 2P', sans-serif;
   color: black;
 

@@ -15,6 +15,17 @@
   <body>
     <h1>🎵&thinsp;TrackBack&thinsp;🎵</h1>
 
+    <div id="controls-server" hidden>
+      <!-- Get serverurl by user input if server_config.js does not exist. -->
+      <div class="input-group">
+        <label for="server">Server&thinsp;🪩</label>
+        <input
+          type="text"
+          id="server"
+          value="http://localhost:4200"
+        />
+      </div>
+    </div>
     <div id="controls">
       <div class="input-group">
         <label for="username">Username&thinsp;👩🏻‍🎤</label>
@@ -52,7 +63,7 @@
         <select id="musicServiceDropdown">
           <option value="spotify">Spotify 📻🎶</option>
           <option value="applemusic">Apple Music 🍎🎶</option>
-          <option value="mock">Dummy Music Service </option>
+          <option value="mock">Dummy Music Service</option>
         </select>
       </div>
 
