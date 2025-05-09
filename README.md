@@ -2,7 +2,7 @@
 
 **TrackBack** is a music-based game where players must sort currently playing songs by their year of release.
 
-[Watch the demo](https://youtube.com/shorts/5E3Vtzxa9SE?feature=shared).
+Watch the demo video [here](https://youtube.com/shorts/5E3Vtzxa9SE?feature=shared).
 
 The full codebase, including both the Python backend and the Web UI frontend, is available here:  
 👉 [acc-aqt/track-back](https://github.com/acc-aqt/track-back)
