@@ -5,6 +5,11 @@ let userHostingSpotifySession = false
 
 let serverUrl = ''
 
+let pingInterval = null
+let reconnectTimeout = null
+let reconnectAttempts = 0
+const MAX_RECONNECT_ATTEMPTS = 10
+
 function loadScript (url, onSuccess, onError) {
   const script = document.createElement('script')
   script.src = url
@@ -237,62 +242,88 @@ function connectWebSocket () {
   socket.onopen = () => {
     document.getElementById('game').style.display = 'block'
     log('🔌 Connected to game session.')
-  }
 
+    reconnectAttempts = 0 // Reset attempt counter
+
+    // Start keepalive ping
+    pingInterval = setInterval(() => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ type: 'ping' }))
+      }
+    }, 10000)
+  }
   socket.onerror = e => {
     console.error('🚨 WebSocket error:', e)
-    log('🚨 Connection error')
+    log('🚨 WebSocket encountered an error.')
   }
 
   socket.onmessage = event => {
-    const data = JSON.parse(event.data)
-    const type = data.type
+    try {
+      const data = JSON.parse(event.data)
+      const type = data.type
 
-    if (type === 'your_turn') {
-      handleYourTurn(data)
-    } else if (type === 'guess_result' && data.player === username) {
-      handleGuessResult(data)
-    } else if (type === 'welcome') {
-      log(`👋🏻 ${data.message}`)
-    } else if (type === 'player_joined') {
-      log(`👋🏻 ${data.message}`)
-    } else if (type === 'game_start') {
-      log(`🎮 ${data.message}`)
-    } else if (type === 'player_rejoined' && data.user_name === username) {
-      handleYourTurn(data)
-    } else if (type === 'player_rejoined' && data.user_name !== username) {
-      log(`👋🏻 ${data.message}`)
-    } else if (type === 'error') {
-      log(`🚨 Error: ${data.message}`)
-    } else if (type === 'other_player_guess') {
-      log(`🧑🏽‍🎤 ${data.message}`)
-    } else if (type === 'game_over') {
-      log(`🏁 Game Over! Winner: ${data.winner}`)
+      if (type === 'your_turn') {
+        handleYourTurn(data)
+      } else if (type === 'guess_result' && data.player === username) {
+        handleGuessResult(data)
+      } else if (type === 'welcome') {
+        log(`👋🏻 ${data.message}`)
+      } else if (type === 'player_joined') {
+        log(`👋🏻 ${data.message}`)
+      } else if (type === 'game_start') {
+        log(`🎮 ${data.message}`)
+      } else if (type === 'player_rejoined' && data.user_name === username) {
+        handleYourTurn(data)
+      } else if (type === 'player_rejoined' && data.user_name !== username) {
+        log(`👋🏻 ${data.message}`)
+      } else if (type === 'error') {
+        log(`🚨 Error: ${data.message}`)
+      } else if (type === 'other_player_guess') {
+        log(`🧑🏽‍🎤 ${data.message}`)
+      } else if (type === 'game_over') {
+        log(`🏁 Game Over! Winner: ${data.winner}`)
+        document.getElementById('newSongContainer').style.display = 'none'
+        const winnerHeader = document.getElementById('winnerHeader')
+        const winnerIsYou = data.winner === username
+        winnerHeader.innerHTML = winnerIsYou
+          ? '🎉&thinsp;You win!&thinsp;🎉<br />👩🏻‍🎤&thinsp;🏆'
+          : `Game over.<br />${data.winner} won the game.`
 
-      document.getElementById('newSongContainer').style.display = 'none'
-
-      const winnerHeader = document.getElementById('winnerHeader')
-      const winnerIsYou = data.winner === username
-
-      winnerHeader.innerHTML = winnerIsYou
-        ? '🎉&thinsp;You win!&thinsp;🎉<br />👩🏻‍🎤&thinsp;🏆'
-        : `Game over.<br />${data.winner} won the game.`
-
-      winnerHeader.style.display = 'block'
-    } else if (type === 'user_disconnected') {
-      log(`❌ ${data.message}`)
-    } else {
-      log(`Unknown message type: ${type}.`)
+        winnerHeader.style.display = 'block'
+      } else if (type === 'user_disconnected') {
+        log(`❌ ${data.message}`)
+      } else {
+        log(`Unknown message type: ${type}.`)
+      }
+    } catch (e) {
+      console.error('❌ Error parsing WebSocket message:', e)
+      log('❌ Received invalid data from server.')
     }
   }
 
   socket.onclose = () => {
-    log(
-      '❌ Connection closed. You can try to reconnect (using the same username).'
-    )
+    log('❌ Connection closed. Attempting to reconnect...')
+
+    clearInterval(pingInterval)
+
+    if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+      reconnectAttempts++
+      reconnectTimeout = setTimeout(() => {
+        log(`🔁 Reconnecting attempt ${reconnectAttempts}...`)
+        connectWebSocket()
+      }, 2000 * reconnectAttempts) // Exponential backoff
+    } else {
+      log('❌ Max reconnect attempts reached. Please reload the page.')
+    }
   }
 }
 
+window.addEventListener('online', () => {
+  if (!socket || socket.readyState === WebSocket.CLOSED) {
+    log('🌐 Network back online. Reconnecting WebSocket...')
+    connectWebSocket()
+  }
+})
 async function listAndChooseGameSessions () {
   try {
     document.getElementById('joinGameConfigBox').hidden = false
